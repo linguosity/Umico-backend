@@ -18,23 +18,25 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth.models import User
+from rest_framework_nested import routers
 from rest_framework import routers, serializers, viewsets
+from .views import CustomerViewSet, ScanViewSet, PrintViewSet, FrameViewSet, AddressViewSet
 
+router = routers.DefaultRouter()
+router.register(r'customers', CustomerViewSet)
+
+#nested routers to add onto customer URL with PK id
+customers_router = routers.NestedDefaultRouter(router, r'customers', lookup='customer')
+customers_router.register(r'scans', ScanViewSet, basename='customer-scans')
+customers_router.register(r'frames', FrameViewSet, basename='customer-frames')
+customers_router.register(r'prints', PrintViewSet, basename='customer-prints')
 
 urlpatterns = [
-    #Pages
-    
-    #Customer
-
-    #Scan
-    
-    #Print
-    
-    #Frame
-    
-    #Address
-
+    #Admin page
     path("admin/", admin.site.urls),
-    path('api-auth/', include('rest_framework.urls'))
+    #
+    path('api-auth/', include('rest_framework.urls')),
+
+    path('', include(customers_router.urls)),
 ]
 

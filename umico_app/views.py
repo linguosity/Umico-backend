@@ -44,13 +44,6 @@ class ScanViewSet(viewsets.ModelViewSet):
     queryset = Scan.objects.all()
     serializer_class = ScanSerializer
 
-    @action(detail=True, methods=['get'])
-    def frames(self, request, pk=None):
-        customer = self.get_object()
-        frames = Frame.objects.filter(customer=customer)
-        serializer = ScanSerializer(frames, many=True)
-        return Response(serializer.data)
-
 class PrintViewSet(viewsets.ModelViewSet):
     queryset = Print.objects.all()
     serializer_class = PrintSerializer
