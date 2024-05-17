@@ -5,6 +5,21 @@ from django.core.validators import EmailValidator, RegexValidator
 
 # Create your models here.
 
+class Address(models.Model):
+    customer = models.ForeignKey('Customer', on_delete=models.CASCADE, related_name='shipping_addresses')
+    street = models.CharField(max_length=255)
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    zip_code = models.CharField(max_length=20)
+    country = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.street}, {self.city}, {self.state}, {self.zip_code}"
+    
+    def get_absolute_url(self):
+        return reverse('shipping_address_detail', kwargs={'pk': self.id})
+
+
 class Employee(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)

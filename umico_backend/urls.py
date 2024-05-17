@@ -21,11 +21,20 @@ from django.contrib.auth.models import User
 from rest_framework import routers, serializers, viewsets
 
 
-
-
-
 urlpatterns = [
+    #Pages
+    
+    #Customer
+
+    #Scan
+    
+    #Print
+    
+    #Frame
+    
+    #Address
+
     path("admin/", admin.site.urls),
-     path('api-auth/', include('rest_framework.urls'))
+    path('api-auth/', include('rest_framework.urls'))
 ]
 

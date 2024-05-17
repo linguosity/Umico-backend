@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from umico_app.models import Customer, Scan, Print, Employee, Frame
+from umico_app.models import Customer, Scan, Print, Employee, Frame, Address
 from datetime import datetime
 from django.utils import timezone
 
@@ -15,6 +15,7 @@ class Command(BaseCommand):
         Print.objects.all().delete()
         Employee.objects.all().delete()
         Frame.objects.all().delete()
+        Address.objects.all().delete()
 
         # Create some employees
         emp1 = Employee.objects.create(first_name='John', last_name='Doe', email='john.doe@example.com', phone_number='+123456789')
@@ -24,6 +25,10 @@ class Command(BaseCommand):
         cust1 = Customer.objects.create(first_name='Alice', last_name='Smith', email='alice.smith@example.com', phone_number='+1122334455')
         cust2 = Customer.objects.create(first_name='Bob', last_name='Brown', email='bob.brown@example.com', phone_number='+9988776655')
 
+        # Create one shipping address for each customer
+        Address.objects.create(customer=cust1, street='123 Elm St', city='Springfield', state='IL', zip_code='62701', country='USA')
+        Address.objects.create(customer=cust2, street='789 Oak St', city='Springfield', state='IL', zip_code='62703', country='USA')
+                           
         # Create some print jobs
         Print.objects.create(
             customer=cust1,
