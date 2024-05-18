@@ -24,6 +24,9 @@ from umico_app.views import CustomerViewSet, ScanViewSet, PrintViewSet, FrameVie
 
 router = routers.DefaultRouter()
 router.register(r'customers', CustomerViewSet)
+router.register(r'scans', ScanViewSet)
+router.register(r'prints', PrintViewSet)
+router.register(r'frames', FrameViewSet)
 
 #nested routers to add onto customer URL with PK id
 customers_router = NestedDefaultRouter(router, r'customers', lookup='customer')

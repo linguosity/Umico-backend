@@ -83,6 +83,8 @@ class Print(models.Model):
     image_width = models.DecimalField(max_digits=8, decimal_places=2)
     paper_height = models.DecimalField(max_digits=8, decimal_places=2)
     paper_width = models.DecimalField(max_digits=8, decimal_places=2)
+    #upload image to storage & save url
+    thumbnail = models.CharField(max_length=250, default='/static/images/placeholder.svg')
     #border or full bleed
     print_style = models.CharField(max_length=50)
     quantity = models.IntegerField()
@@ -108,7 +110,7 @@ class Scan(models.Model):
     # 300 600 900 1200 or 1600
     dpi = models.DecimalField(max_digits=8, decimal_places=2)
     #upload image to storage & save url
-    thumbnail = models.CharField(max_length=250)
+    thumbnail = models.CharField(max_length=250, default='/static/images/placeholder.svg')
     is_completed = models.BooleanField()
     client_notified = models.BooleanField()
     notification_date = models.DateTimeField(null=True, blank=True)
@@ -150,7 +152,7 @@ class Frame(models.Model):
     float_in_total = models.DecimalField(max_digits=8, decimal_places=2)
     glazing = models.CharField(max_length=50)
     #upload image to storage & save url
-    thumbnail = models.CharField(max_length=250)
+    thumbnail = models.CharField(max_length=250, default='/static/images/placeholder.svg')
     # glazing premium clear, conservation clear uv
     glazing_type = models.CharField(max_length=50)
     spacers = models.BooleanField()
