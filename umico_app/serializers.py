@@ -1,10 +1,18 @@
 from rest_framework import serializers
 from .models import Customer, Scan, Print, Employee, Frame, Address
 
+
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = '__all__'
+
 class CustomerSerializer(serializers.ModelSerializer):
+    shipping_addresses = AddressSerializer(many=True, read_only=True)
+
     class Meta:
         model = Customer
-        fields = '__all__'  
+        fields = ['id','first_name', 'last_name', 'email', 'phone_number', 'shipping_addresses']
 
 class ScanSerializer(serializers.ModelSerializer):
     class Meta:
@@ -24,9 +32,4 @@ class EmployeeSerializer(serializers.ModelSerializer):
 class FrameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Frame
-        fields = '__all__'
-
-class AddressSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Address
         fields = '__all__'
