@@ -11,6 +11,19 @@ class CustomerViewSet(viewsets.ModelViewSet):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
 
+    def retrieve(self, request, pk=None):
+        customer=self.get_object()
+        scans = Scan.objects.filter(customer=customer)
+        frames = Frame.objects.filter(customer=customer)
+        prints = Print.objects.filter(customer=customer)
+
+        customer_data = CustomerSerializer(customer).data
+        customer_data['scans'] = ScanSerializer(scans, many=True).data
+        customer_data['frames'] = FrameSerializer(frames, many=True).data
+        customer_data['prints'] = PrintSerializer(prints, many=True).data
+
+        return Response(customer_data)
+
     #VIEW SCANS | customers/{id}/scans/ #####################
     @action(detail=True, methods=['get'])
     def scans(self, request, pk=None):
