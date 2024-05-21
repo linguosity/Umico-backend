@@ -1,7 +1,8 @@
 from django.core.management.base import BaseCommand
 from umico_app.models import Customer, Scan, Print, Employee, Frame, Address
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.utils import timezone
+import random
 
 class Command(BaseCommand):
     help = 'Seed the database with initial data'
@@ -28,8 +29,92 @@ class Command(BaseCommand):
         # Create one shipping address for each customer
         Address.objects.create(customer=cust1, street='123 Elm St', city='Springfield', state='IL', zip_code='62701', country='USA')
         Address.objects.create(customer=cust2, street='789 Oak St', city='Springfield', state='IL', zip_code='62703', country='USA')
-                           
-        # Create some print jobs
+
+        # Art URLs for low-resolution images
+        art_urls = [
+            'https://cdn.midjourney.com/593ccd89-0308-40d2-8dca-4e7f703224d6/0_0.jpeg',
+            'https://cdn.midjourney.com/8ffd06b0-78d8-4e47-8c07-6342c34c3d86/0_3.jpeg',
+            'https://cdn.midjourney.com/f642f4ea-53bf-4ede-a775-1086bb7bef13/0_0.jpeg',
+            # Add more URLs as needed
+        ]
+
+        def random_date():
+            return timezone.make_aware(datetime(2023, 7, 1, 12, 0) + timedelta(days=random.randint(-365, 365)))
+
+        def create_prints(customer):
+            for i in range(3):
+                Print.objects.create(
+                    customer=customer,
+                    deadline=timezone.now(),
+                    image_height=random.uniform(8.0, 12.0),
+                    image_width=random.uniform(8.0, 12.0),
+                    paper_height=random.uniform(8.0, 12.0),
+                    paper_width=random.uniform(8.0, 12.0),
+                    print_style=random.choice(['Full Bleed', 'Border']),
+                    quantity=random.randint(10, 200),
+                    job_notes=f'Print job notes {i + 3}'
+                )
+
+        def create_scans(customer):
+            for i in range(3):
+                Scan.objects.create(
+                    customer=customer,
+                    deadline=timezone.now(),
+                    image_height=random.uniform(8.0, 12.0),
+                    image_width=random.uniform(8.0, 12.0),
+                    file_type=random.choice(['JPEG', 'PNG']),
+                    dpi=random.choice([300, 600, 1200]),
+                    thumbnail=random.choice(art_urls),
+                    is_completed=random.choice([True, False]),
+                    client_notified=random.choice([True, False]),
+                    notification_date=random_date(),
+                    final_location=f'server/folder{i + 3}',
+                    payment_type=random.choice(['Credit Card', 'Cash', 'Check']),
+                    deposit_made=random.choice([True, False]),
+                    balance_paid=random.choice([True, False])
+                )
+
+        def create_frames(customer):
+            for i in range(3):
+                Frame.objects.create(
+                    customer=customer,
+                    deadline=timezone.now(),
+                    image_height=random.uniform(8.0, 12.0),
+                    image_width=random.uniform(8.0, 12.0),
+                    frame_height=random.uniform(10.0, 15.0),
+                    frame_width=random.uniform(10.0, 15.0),
+                    moulding=random.choice(['Wood', 'Metal']),
+                    mat=random.choice(['Single', 'Double']),
+                    mat_ply=random.choice(['4-ply', '8-ply']),
+                    mat_window=random.choice([True, False]),
+                    mat_double=random.choice([True, False]),
+                    mat_in_visible=random.uniform(0.1, 0.5),
+                    mat_inside_height=random.uniform(8.0, 10.0),
+                    mat_inside_width=random.uniform(8.0, 10.0),
+                    mat_outside_height=random.uniform(9.0, 11.0),
+                    mat_outside_width=random.uniform(9.0, 11.0),
+                    float_type=random.choice(['Raised', 'Flat']),
+                    float_in_visible=random.uniform(0.1, 0.5),
+                    float_in_total=random.uniform(0.3, 0.7),
+                    glazing=random.choice(['Glass', 'Acrylic']),
+                    thumbnail=random.choice(art_urls),
+                    glazing_type=random.choice(['UV Clear', 'Non-Glare']),
+                    spacers=random.choice([True, False]),
+                    spacers_type=random.choice(['Plastic', 'None']),
+                    canvas_floater=random.uniform(0.1, 0.3),
+                    straight_to_frame=random.choice([True, False]),
+                    art_location=random.choice(['Storage Room', 'Exhibition Hall']),
+                    art_condition=random.choice(['Good', 'Excellent']),
+                    is_completed=random.choice([True, False]),
+                    client_notified=random.choice([True, False]),
+                    notification_date=random_date(),
+                    final_location=random.choice(['Storage Room', 'Exhibition Hall']),
+                    payment_type=random.choice(['Credit Card', 'Cash', 'Check']),
+                    deposit=random.choice([True, False]),
+                    balance_paid=random.choice([True, False])
+                )
+
+        # Create initial print jobs
         Print.objects.create(
             customer=cust1,
             deadline=timezone.now(),
@@ -54,7 +139,7 @@ class Command(BaseCommand):
             job_notes='Print job 2 notes'
         )
 
-        # Create some scan jobs
+        # Create initial scan jobs
         Scan.objects.create(
             customer=cust1,
             deadline=timezone.now(),
@@ -89,7 +174,7 @@ class Command(BaseCommand):
             balance_paid=True
         )
 
-        # Create some frame jobs
+        # Create initial frame jobs
         Frame.objects.create(
             customer=cust1,
             deadline=timezone.now(),
@@ -165,5 +250,11 @@ class Command(BaseCommand):
             deposit=False,
             balance_paid=True
         )
+
+        # Create additional jobs
+        for customer in [cust1, cust2]:
+            create_prints(customer)
+            create_scans(customer)
+            create_frames(customer)
 
         self.stdout.write("Data seeding completed.")
