@@ -8,16 +8,31 @@ class AddressSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ScanSerializer(serializers.ModelSerializer):
+    customer = serializers.SerializerMethodField()
+
+    def get_customer(self, obj):
+        return CustomerSerializer(obj.customer).data
+    
     class Meta:
         model = Scan
         fields = '__all__'
 
 class PrintSerializer(serializers.ModelSerializer):
+    customer = serializers.SerializerMethodField()
+
+    def get_customer(self, obj):
+        return CustomerSerializer(obj.customer).data
+    
     class Meta:
         model = Print
         fields = '__all__'
 
 class FrameSerializer(serializers.ModelSerializer):
+    customer = serializers.SerializerMethodField()
+
+    def get_customer(self, obj):
+        return CustomerSerializer(obj.customer).data
+    
     class Meta:
         model = Frame
         fields = '__all__'
