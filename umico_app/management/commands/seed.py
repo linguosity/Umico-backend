@@ -84,6 +84,8 @@ class Command(BaseCommand):
                     frame_height=random.uniform(10.0, 15.0),
                     frame_width=random.uniform(10.0, 15.0),
                     moulding=random.choice(['Wood', 'Metal']),
+                    moulding_number=random.randint(1000, 9999),  # Add this line
+                    mat_number=random.randint(1000, 9999), 
                     mat=random.choice(['Single', 'Double']),
                     mat_ply=random.choice(['4-ply', '8-ply']),
                     mat_window=random.choice([True, False]),
@@ -183,7 +185,9 @@ class Command(BaseCommand):
             frame_height=10.0,
             frame_width=12.0,
             moulding='Wood',
+            moulding_number=1234, 
             mat='Single',
+            mat_number=5678,
             mat_ply='4-ply',
             mat_window=True,
             mat_double=False,
