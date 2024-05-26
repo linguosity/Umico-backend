@@ -4,6 +4,8 @@ from django.shortcuts import render, get_object_or_404
 from rest_framework.response import Response
 from .models import Customer, Scan, Frame, Print, Address
 from .serializers import CustomerSerializer, ScanSerializer, PrintSerializer, FrameSerializer, AddressSerializer
+from django.views.decorators.csrf import csrf_exempt
+
 
 # GET Viewsets
 
@@ -81,6 +83,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # UPDATE FRAME
+    @action(detail=True, methods=['put'])
     def update_frame(self, request, pk=None):
         customer = self.get_object()
         frame = get_object_or_404(Frame, customer=customer, pk=request.data.get('frame_id'))
@@ -90,8 +93,8 @@ class CustomerViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # DELETE FRAME (ARCHIVE)
-    @action(detail=True, methods=['delete'], url_path='delete_frame/(?P<frame_id>[^/.]+)')
+    # DELETE FRAME 
+    @action(detail=True, methods=['delete'])
     def delete_frame(self, request, pk=None):
         customer = self.get_object()
         frame = get_object_or_404(Frame, customer=customer, pk=request.data.get('frame_id'))
