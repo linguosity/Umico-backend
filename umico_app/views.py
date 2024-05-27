@@ -132,7 +132,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # DELETE PRINT (ARCHIVE)
-    @action(detail=True, methods=['delete'], url_path='delete_print/(?P<print_id>[^/.]+)')
+    @action(detail=True, methods=['delete'])
     def delete_print(self, request, pk=None):
         customer = self.get_object()
         print_obj = get_object_or_404(Print, customer=customer, pk=request.data.get('print_id'))

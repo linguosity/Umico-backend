@@ -118,6 +118,7 @@ class Scan(models.Model):
     payment_type = models.CharField(max_length=50)
     deposit_made = models.BooleanField()
     balance_paid = models.BooleanField()
+    job_notes = models.TextField(default="No notes at this time")
 
     def __str__(self):
         return f"{self.customer.first_name} {self.customer.last_name}"
