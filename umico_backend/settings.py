@@ -20,6 +20,8 @@ load_dotenv()  # Load environment variables from .env file
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -27,18 +29,39 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
-DATABASES = {
+if IS_HEROKU_APP:
+    DATABASES = {
+    'default': dj_database_url.config(
+        default='postgres://jrodbpirhkmprx:0d05182b033f938c2c78ae8941eb59509d535c1a1248080cb363f1e3dce21ef4@ec2-54-157-172-245.compute-1.amazonaws.com:5432/d1pujgl5sgor9n',
+        conn_max_age=600,
+        ssl_require=True
+    )
+}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'umico',
+        }
+    }
+
+""" DATABASES = {
     'default': dj_database_url.config(
         default=f"postgres://{os.getenv('DATABASE_USER')}:{os.getenv('DATABASE_PASSWORD')}@{os.getenv('DATABASE_HOST')}:{os.getenv('DATABASE_PORT')}/{os.getenv('DATABASE_NAME')}"
     )
-}
+} """
 
 # Ensure DATABASE_URL environment variable is used if present
 DATABASES['default'].update(dj_database_url.config(conn_max_age=600, ssl_require=True))
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+if IS_HEROKU_APP:
+    DEBUG = False
+    ALLOWED_HOSTS = ["*"]
+else:
+    ALLOWED_HOSTS = []
+    DEBUG = True
 
 ALLOWED_HOSTS = ["umicoframes-4f015aefac88.herokuapp.com"]  # IMPORTANT: Add your Heroku app URL and any other allowed hosts
 
@@ -185,8 +208,18 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = BASE_DIR, 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+STORAGES = {
+    # Enable WhiteNoise's GZip and Brotli compression of static assets:
+    # https://whitenoise.readthedocs.io/en/latest/django.html#add-compression-and-caching-support
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
+WHITENOISE_KEEP_ONLY_HASHED_FILES = True
 
 
 # Default primary key field type
