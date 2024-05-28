@@ -22,7 +22,7 @@ from rest_framework_nested.routers import NestedDefaultRouter
 from rest_framework import routers
 from umico_app.views import (
     CustomerViewSet, ScanViewSet, PrintViewSet, FrameViewSet, 
-    AddressViewSet, GetCSRFToken, signup
+    AddressViewSet, GetCSRFToken, signup, index
 )
 
 router = routers.DefaultRouter()
@@ -43,8 +43,9 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls')), # API authentication
      # include the built-in auth urls for the built-in views
     path('accounts/', include('django.contrib.auth.urls')), # Built-in auth views
-     path('accounts/signup/', signup, name='signup'), # Signup view
+    path('accounts/signup/', signup, name='signup'), # Signup view
     path('csrf/', GetCSRFToken.as_view(), name='csrf-token'), # CSRF token endpoint
+    path('', index, name='index'),  # Root URL
     path('', include(router.urls)), # Main API routes
     path('', include(customers_router.urls)), # Nested customer routes
    

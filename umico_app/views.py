@@ -11,6 +11,11 @@ from .models import Customer, Scan, Frame, Print, Address
 from .serializers import CustomerSerializer, ScanSerializer, PrintSerializer, FrameSerializer, AddressSerializer
 from django.views.decorators.csrf import csrf_exempt
 
+# umico_app/views.py
+from django.http import HttpResponse
+
+def index(request):
+    return HttpResponse("Hello, world. You're at the index.")
 
 # GET Viewsets
 class GetCSRFToken(APIView):
