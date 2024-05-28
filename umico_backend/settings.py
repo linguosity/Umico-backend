@@ -40,7 +40,7 @@ DATABASES['default'].update(dj_database_url.config(conn_max_age=600, ssl_require
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["https://umicoframes-4f015aefac88.herokuapp.com/"]  # IMPORTANT: Add your Heroku app URL and any other allowed hosts
+ALLOWED_HOSTS = ["umicoframes-4f015aefac88.herokuapp.com/"]  # IMPORTANT: Add your Heroku app URL and any other allowed hosts
 
 
 # Application definition
@@ -73,6 +73,21 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
 ]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
+}
+
 
 # CORS settings for Next.js frontend
 CORS_ALLOWED_ORIGINS = [
