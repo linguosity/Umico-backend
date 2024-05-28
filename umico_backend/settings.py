@@ -40,7 +40,7 @@ DATABASES['default'].update(dj_database_url.config(conn_max_age=600, ssl_require
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["umicoframes-4f015aefac88.herokuapp.com/"]  # IMPORTANT: Add your Heroku app URL and any other allowed hosts
+ALLOWED_HOSTS = ["umicoframes-4f015aefac88.herokuapp.com"]  # IMPORTANT: Add your Heroku app URL and any other allowed hosts
 
 
 # Application definition
