@@ -56,7 +56,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     #DELETE SCAN (ARCHIVE)
-    @action(detail=True, methods=['delete'], url_path='delete_scan/(?P<scan_id>[^/.]+)')
+    @action(detail=True, methods=['delete'])
     def delete_scan(self, request, pk=None):
         customer = self.get_object()
         scan = get_object_or_404(Scan, customer=customer, pk=request.data.get('scan_id'))
