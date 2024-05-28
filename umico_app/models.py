@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User
 #ChatGPT 5/14
 from django.core.validators import EmailValidator, RegexValidator
 
@@ -19,33 +20,8 @@ class Address(models.Model):
     def get_absolute_url(self):
         return reverse('shipping_address_detail', kwargs={'pk': self.id})
 
-
-class Employee(models.Model):
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
-    email = models.EmailField(
-        max_length=255,
-        unique=True,
-        validators=[EmailValidator(message="Enter a valid email address.")]
-    )
-    phone_number = models.CharField(
-        max_length=15,
-        validators=[
-            RegexValidator(
-                regex=r'^\+?[0-9\- ]+$',
-                message="Enter a valid phone number. It may contain digits, spaces, and optionally start with a '+'."
-            )
-        ],
-        blank=False
-    )
-
-    def __str__(self):
-        return f"{self.first_name} {self.last_name}"
-
-    def get_absolute_url(self):
-        return reverse('employee_detail', kwargs={'pk': self.id})
-
 class Customer(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField(
@@ -64,6 +40,7 @@ class Customer(models.Model):
         blank=False
     )
     timestamp = models.DateTimeField(auto_now_add=True)
+   
 
     def __str__(self):
        return f"{self.first_name} {self.last_name}"

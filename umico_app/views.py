@@ -1,3 +1,8 @@
+from rest_framework.views import APIView
+from django.shortcuts import render, redirect
+from django.contrib.auth.forms import UserCreationForm
+from rest_framework.permissions import IsAuthenticated
+from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from django.shortcuts import render, get_object_or_404
@@ -8,10 +13,27 @@ from django.views.decorators.csrf import csrf_exempt
 
 
 # GET Viewsets
+class GetCSRFToken(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    @ensure_csrf_cookie
+    def get(self, request, *args, **kwargs):
+        return Response({"message": "CSRF cookie set"})
+    
+def signup(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')
+    else:
+        form = UserCreationForm()
+    return render(request, 'registration/signup.html', {'form': form})
 
 class CustomerViewSet(viewsets.ModelViewSet):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
+    permission_classes = [IsAuthenticated]
 
     def retrieve(self, request, pk=None):
         customer=self.get_object()
@@ -147,19 +169,27 @@ class CustomerViewSet(viewsets.ModelViewSet):
         serializer = AddressSerializer(address, many=True)
         return Response(serializer.data)
 
+
 class ScanViewSet(viewsets.ModelViewSet):
     queryset = Scan.objects.order_by('deadline')
     serializer_class = ScanSerializer
+    permission_classes = [IsAuthenticated]
+
 
 class PrintViewSet(viewsets.ModelViewSet):
     queryset = Print.objects.order_by('deadline')
     serializer_class = PrintSerializer
+    permission_classes = [IsAuthenticated]
+
 
 class FrameViewSet(viewsets.ModelViewSet):
     queryset = Frame.objects.order_by('deadline')
     serializer_class = FrameSerializer
+    permission_classes = [IsAuthenticated]
+
 
 class AddressViewSet(viewsets.ModelViewSet):
     queryset = Address.objects.all()
     serializer_class = AddressSerializer
+    permission_classes = [IsAuthenticated]
 
