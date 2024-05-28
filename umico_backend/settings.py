@@ -62,6 +62,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -70,7 +71,7 @@ MIDDLEWARE = [
      "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
+   
     "django.middleware.common.CommonMiddleware",
 ]
 
@@ -93,10 +94,10 @@ LOGGING = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # IMPORTANT: Add your Next.js domain in production
     "http://127.0.0.1:3000",
-    "https://umicoframes-4f015aefac88.herokuapp.com/"
+    "https://umicoframes-4f015aefac88.herokuapp.com",
+    "https://umicoframesfe-eb05e3b38331.herokuapp.com"
 ]
 
-CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_CREDENTIALS = True
 
 SESSION_COOKIE_SECURE = True
