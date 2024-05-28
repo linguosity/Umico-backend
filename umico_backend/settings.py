@@ -78,7 +78,7 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # IMPORTANT: Add your Next.js domain in production
     "http://127.0.0.1:3000",
-    "https://umicoframes-4f015aefac88.herokuapp.com"
+    "https://umicoframes-4f015aefac88.herokuapp.com/"
 ]
 
 CORS_ALLOW_CREDENTIALS = True
