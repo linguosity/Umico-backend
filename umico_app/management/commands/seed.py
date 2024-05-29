@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from umico_app.models import Customer, Scan, Print, Employee, Frame, Address
+from umico_app.models import Customer, Scan, Print, Frame, Address
 from datetime import datetime, timedelta
 from django.utils import timezone
 import random
@@ -14,13 +14,8 @@ class Command(BaseCommand):
         Customer.objects.all().delete()
         Scan.objects.all().delete()
         Print.objects.all().delete()
-        Employee.objects.all().delete()
         Frame.objects.all().delete()
         Address.objects.all().delete()
-
-        # Create some employees
-        emp1 = Employee.objects.create(first_name='John', last_name='Doe', email='john.doe@example.com', phone_number='+123456789')
-        emp2 = Employee.objects.create(first_name='Jane', last_name='Doe', email='jane.doe@example.com', phone_number='+987654321')
 
         # Create some customers
         cust1 = Customer.objects.create(first_name='Alice', last_name='Smith', email='alice.smith@example.com', phone_number='+1122334455')

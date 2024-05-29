@@ -38,10 +38,16 @@ if IS_HEROKU_APP:
     )
 }
 else:
+    DEBUG = True
+    ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': 'umico',
+            'USER': os.getenv('DATABASE_USER'),
+            'PASSWORD': os.getenv('DATABASE_PASSWORD'),
+            'HOST': os.getenv('DATABASE_HOST'),
+            'PORT': os.getenv('DATABASE_PORT'),
         }
     }
 
