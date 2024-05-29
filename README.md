@@ -49,7 +49,8 @@ The backend of Umico is built using Django and provides robust support for manag
 
 ## 📐 Entity Relationship Diagrams
 
-_(Add ERD images here)_
+![Blank diagram (6)](https://github.com/linguosity/Umico-backend/assets/130627705/7ed6b83d-1207-4394-9e04-bc95d2244fa8)
+
 
 ## 📝 User Stories / MVP
 
