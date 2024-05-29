@@ -48,6 +48,9 @@ else:
             'PASSWORD': os.getenv('DATABASE_PASSWORD'),
             'HOST': os.getenv('DATABASE_HOST'),
             'PORT': os.getenv('DATABASE_PORT'),
+            'OPTIONS': {
+                'sslmode': 'disable',  # Disable SSL for local development
+            },
         }
     }
 
@@ -58,7 +61,7 @@ else:
 } """
 
 # Ensure DATABASE_URL environment variable is used if present
-DATABASES['default'].update(dj_database_url.config(conn_max_age=600, ssl_require=True))
+DATABASES['default'].update(dj_database_url.config(conn_max_age=600, ssl_require=IS_HEROKU_APP))
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -66,7 +69,7 @@ if IS_HEROKU_APP:
     DEBUG = False
     ALLOWED_HOSTS = ["*"]
 else:
-    ALLOWED_HOSTS = []
+    ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
     DEBUG = True
 
 ALLOWED_HOSTS = ["umicoframes-4f015aefac88.herokuapp.com"]  # IMPORTANT: Add your Heroku app URL and any other allowed hosts
