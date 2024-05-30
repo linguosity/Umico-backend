@@ -72,8 +72,6 @@ else:
     ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
     DEBUG = True
 
-ALLOWED_HOSTS = ["umicoframes-4f015aefac88.herokuapp.com", 'localhost']  # IMPORTANT: Add your Heroku app URL and any other allowed hosts
-
 
 # Application definition
 
