@@ -30,6 +30,7 @@ router.register(r'customers', CustomerViewSet)
 router.register(r'scans', ScanViewSet)
 router.register(r'prints', PrintViewSet)
 router.register(r'frames', FrameViewSet)
+router.register(r'addresses', AddressViewSet)
 
 #nested routers to add onto customer URL with PK id
 customers_router = NestedDefaultRouter(router, r'customers', lookup='customer')
