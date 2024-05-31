@@ -30,6 +30,9 @@ class PrintSerializer(serializers.ModelSerializer):
 class FrameSerializer(serializers.ModelSerializer):
     customer = serializers.SerializerMethodField()
 
+    def get_customer(self, obj):
+        return CustomerSerializer(obj.customer).data
+
     class Meta:
         model = Frame
         fields = '__all__'
