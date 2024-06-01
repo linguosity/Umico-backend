@@ -64,7 +64,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
         print("Received request data:", request.data)  # Log the received request data
         
         # Extract and remove the addresses data from the request data
-        addresses_data = request.data.get('shipping_addresses', [])
+        addresses_data = request.data.pop('shipping_addresses', [])
         logger.debug("68 Extracted addresses data: %s", addresses_data)
         
         # Check if the shipping_addresses field exists in the request data
