@@ -83,17 +83,21 @@ class CustomerViewSet(viewsets.ModelViewSet):
 
             for address_data in addresses_data:
                 logger.debug("addressdata before setting customer 1st", address_data)
+                address_data.pop('customer', None)
                 address_data['customer'] = customer
                 logger.debug("addressdata before setting customer 2nd time", address_data)
-                Address.objects.create(customer=customer, **address_data)
+                Address.objects.create(**address_data)
                 logger.debug("Created address: %s", address_data)  # Log each created address
             
             logger.debug("Customer created successfully: %s", serializer.data) 
             print("Customer created successfully:", serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
+            logger.debug("Serializer errors: %s", serializer.errors)
             print("Validation errors:", serializer.errors)
-            logger.error("Validation errors: %s", serializer.errors) 
+            logger.error("Validation errors: %s", serializer.errors)
+            logger.debug("Request data for debugging: %s", request.data)
+            logger.debug("Extracted addresses data for debugging: %s", addresses_data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     #VIEW SCANS | customers/{id}/scans/ #####################
