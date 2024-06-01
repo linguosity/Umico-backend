@@ -1,6 +1,9 @@
 from rest_framework import serializers
 from .models import Customer, Scan, Print, Frame, Address
 
+import logging
+
+logger = logging.getLogger('umico_app')
 
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
@@ -48,10 +51,19 @@ class CustomerSerializer(serializers.ModelSerializer):
         fields = ['id', 'first_name', 'last_name', 'email', 'phone_number', 'shipping_addresses', 'scans', 'prints', 'frames']
 
     def create(self, validated_data):
+        logger.debug("Creating customer with validated data: %s", validated_data)
         addresses_data = validated_data.pop('shipping_addresses', [])
+        logger.debug("Addresses data: %s", addresses_data)
+        
         customer = Customer.objects.create(**validated_data)
+        logger.debug("Customer created: %s", customer)
+        
         for address_data in addresses_data:
-            Address.objects.create(customer=customer, **address_data)
+            address_data['customer'] = customer
+            Address.objects.create(**address_data)
+            logger.debug("Created address: %s", address_data)
+            
+        logger.debug("Customer creation complete with addresses: %s", addresses_data)
         return customer
 
     def update(self, instance, validated_data):
