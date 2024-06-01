@@ -60,13 +60,15 @@ class CustomerViewSet(viewsets.ModelViewSet):
      # CREATE CUSTOMER
     @action(detail=False, methods=['post'])
     def add_customer(self, request):
-        logger.debug("Received request data: %s", request.data) 
+        logger.debug("63 Received request data: %s", request.data) 
         print("Received request data:", request.data)  # Log the received request data
         
         # Extract and remove the addresses data from the request data
         addresses_data = request.data.pop('shipping_addresses', [])
+        logger.debug("68 Extracted addresses data: %s", addresses_data)
         
         serializer = CustomerSerializer(data=request.data)
+        logger.debug("serializer 70: ", serializer)
         if serializer.is_valid(): 
             logger.debug("Serializer valid, saving data...") 
             print("Serializer valid, saving data...")
