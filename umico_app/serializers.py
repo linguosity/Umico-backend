@@ -59,7 +59,8 @@ class CustomerSerializer(serializers.ModelSerializer):
         logger.debug("Customer created: %s", customer)
         
         for address_data in addresses_data:
-            address_data['customer'] = customer
+            address_data['customer'] = customer.id
+            logger.debug("customer id is", customer.id)
             Address.objects.create(**address_data)
             logger.debug("Created address: %s", address_data)
             

@@ -74,7 +74,9 @@ class CustomerViewSet(viewsets.ModelViewSet):
             customer = serializer.save()
 
             for address_data in addresses_data:
-                address_data['customer'] = customer.id
+                logger.debug("addressdata before setting customer 1st", address_data)
+                address_data['customer'] = customer
+                logger.debug("addressdata before setting customer 2nd time", address_data)
                 Address.objects.create(customer=customer, **address_data)
                 logger.debug("Created address: %s", address_data)  # Log each created address
             
