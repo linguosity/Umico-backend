@@ -11,6 +11,10 @@ from .models import Customer, Scan, Frame, Print, Address
 from .serializers import CustomerSerializer, ScanSerializer, PrintSerializer, FrameSerializer, AddressSerializer
 from django.views.decorators.csrf import csrf_exempt
 
+import logging
+
+logger = logging.getLogger('umico_app')
+
 # umico_app/views.py
 from django.http import HttpResponse
 
@@ -56,10 +60,24 @@ class CustomerViewSet(viewsets.ModelViewSet):
      # CREATE CUSTOMER
     @action(detail=False, methods=['post'])
     def add_customer(self, request):
+        logger.debug("Received request data: %s", request.data) 
+        print("Received request data:", request.data)  # Log the received request data
         serializer = CustomerSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
+        if serializer.is_valid(): 
+            logger.debug("Serializer valid, saving data...") 
+            print("Serializer valid, saving data...")
+            customer = serializer.save()
+            addresses_data = request.data.pop('shipping_addresses')
+            logger.debug("Extracted addresses data: %s", addresses_data) 
+            for address_data in addresses_data:
+                Address.objects.create(customer=customer, **address_data)
+                logger.debug("Created address: %s", address_data)  # Log each created address
+            logger.debug("Customer created successfully: %s", serializer.data) 
+            print("Customer created successfully:", serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            print("Validation errors:", serializer.errors)
+            logger.error("Validation errors: %s", serializer.errors) 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     #VIEW SCANS | customers/{id}/scans/ #####################
