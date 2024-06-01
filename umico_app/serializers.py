@@ -38,7 +38,7 @@ class FrameSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class CustomerSerializer(serializers.ModelSerializer):
-    shipping_addresses = AddressSerializer(many=True)
+    shipping_addresses = AddressSerializer(many=True, required=False)
     scans = ScanSerializer(many=True, read_only=True)
     prints = PrintSerializer(many=True, read_only=True)
     frames = FrameSerializer(many=True, read_only=True)
@@ -49,14 +49,13 @@ class CustomerSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         addresses_data = validated_data.pop('shipping_addresses')
-        print("Creating customer with addresses:", validated_data, addresses_data)  # Add this line
+
         customer = Customer.objects.create(**validated_data)
 
-        # Save the Address instances to the database before calling the set() method
-        address_instances = []
-        for address_data in addresses_data:
-            address = Address.objects.create(customer=customer, **address_data)
-            address_instances.append(address)
+        # Manually deserialize the shipping_addresses data using the AddressSerializer
+        address_serializer = AddressSerializer(data=addresses_data, many=True)
+        address_serializer.is_valid(raise_exception=True)
+        address_instances = address_serializer.save(customer=customer)
 
         customer.shipping_addresses.set(address_instances)
 
