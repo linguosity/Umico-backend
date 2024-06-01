@@ -41,7 +41,7 @@ class FrameSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class CustomerSerializer(serializers.ModelSerializer):
-    shipping_addresses = AddressSerializer(many=True, required=True)
+    shipping_addresses = AddressSerializer(many=True, required=False)
     scans = ScanSerializer(many=True, read_only=True)
     prints = PrintSerializer(many=True, read_only=True)
     frames = FrameSerializer(many=True, read_only=True)
