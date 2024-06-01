@@ -56,19 +56,10 @@ class CustomerViewSet(viewsets.ModelViewSet):
      # CREATE CUSTOMER
     @action(detail=False, methods=['post'])
     def add_customer(self, request):
-        serializer = self.get_serializer(data=request.data)
+        serializer = CustomerSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-     # UPDATE CUSTOMER
-    def update(self, request, pk=None):
-        customer = self.get_object()
-        serializer = self.get_serializer(customer, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     #VIEW SCANS | customers/{id}/scans/ #####################
@@ -90,7 +81,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     #UPDATE SCAN
-    @action(detail=True, methods=['put'])
+    @action(detail=True, methods=['put'], url_path='update_scan/(?P<scan_id>[^/.]+)')
     def update_scan(self, request, pk=None):
         customer = self.get_object()
         scan = get_object_or_404(Scan, customer=customer, pk=request.data.get('scan_id'))
