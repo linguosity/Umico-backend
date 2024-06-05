@@ -52,7 +52,7 @@ class Print(models.Model):
     deadline = models.DateTimeField()
     #Timestamp necessary?
     #one customer to many prints including delete all method
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer, related_name='prints', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
     #PRINT JOB ATTRIBUTES
@@ -77,7 +77,7 @@ class Scan(models.Model):
     deadline = models.DateTimeField()
     #Timestamp necessary?
     #one customer to many scans
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer, related_name='scans', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
     #SCAN JOB ATTRIBUTES
@@ -152,7 +152,7 @@ class Frame(models.Model):
     balance_paid = models.BooleanField()
 
     # one customer to many frames
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer, related_name='frames', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
     #functions
