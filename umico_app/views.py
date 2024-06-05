@@ -45,16 +45,9 @@ class CustomerViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def retrieve(self, request, pk=None):
+        logger.debug("Retrieve customer with pk: %s", pk)
         customer=self.get_object()
-        scans = Scan.objects.filter(customer=customer)
-        frames = Frame.objects.filter(customer=customer)
-        prints = Print.objects.filter(customer=customer)
-
         customer_data = CustomerSerializer(customer).data
-        customer_data['scans'] = ScanSerializer(scans, many=True).data
-        customer_data['frames'] = FrameSerializer(frames, many=True).data
-        customer_data['prints'] = PrintSerializer(prints, many=True).data
-
         return Response(customer_data)
     
      # CREATE CUSTOMER
