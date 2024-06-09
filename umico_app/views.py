@@ -45,7 +45,6 @@ class CustomerViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def retrieve(self, request, pk=None):
-        logger.debug("Retrieve customer with pk: %s", pk)
         customer=self.get_object()
         customer_data = CustomerSerializer(customer).data
         return Response(customer_data)
@@ -53,11 +52,9 @@ class CustomerViewSet(viewsets.ModelViewSet):
      # CREATE CUSTOMER
     @action(detail=False, methods=['post'])
     def add_customer(self, request):
-        logger.debug("63 Received request data: %s", request.data) 
         
         # Extract and remove the addresses data from the request data
         addresses_data = request.data.pop('shipping_addresses', [])
-        logger.debug("68 Extracted addresses data: %s", addresses_data)
         
         # Check if the shipping_addresses field exists in the request data
         if 'shipping_addresses' in request.data:
@@ -66,29 +63,21 @@ class CustomerViewSet(viewsets.ModelViewSet):
             print("shipping_addresses NOT found in request data")
 
         serializer = CustomerSerializer(data=request.data)
-        logger.debug("serializer 70: ", serializer)
 
         if serializer.is_valid(): 
-            logger.debug("Serializer valid, saving data...") 
 
             customer = serializer.save()
 
             for address_data in addresses_data:
-                logger.debug("addressdata before setting customer 1st", address_data)
                 address_data.pop('id', None)
                 address_data.pop('customer', None)
                 address_data['customer'] = customer
-                logger.debug("addressdata before setting customer 2nd time", address_data)
                 Address.objects.create(**address_data)
-                logger.debug("Created address: %s", address_data)  # Log each created address
-            
-            logger.debug("Customer created successfully: %s", serializer.data) 
+
             print("Customer created successfully:", serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             logger.debug("Serializer errors: %s", serializer.errors)
-            logger.debug("Request data for debugging: %s", request.data)
-            logger.debug("Extracted addresses data for debugging: %s", addresses_data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     #VIEW SCANS | customers/{id}/scans/ #####################

@@ -10,17 +10,28 @@ class AddressSerializer(serializers.ModelSerializer):
         model = Address
         fields = '__all__'
 
+# Simplified Customer Serializer for nested use
+class CustomerShortSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Customer
+        fields = ['id', 'first_name', 'last_name', 'email']
+
 class ScanSerializer(serializers.ModelSerializer):
+    customer = CustomerShortSerializer(read_only=True) 
+
     class Meta:
         model = Scan
         fields = '__all__'
 
 class PrintSerializer(serializers.ModelSerializer):
+    customer = CustomerShortSerializer(read_only=True) 
+
     class Meta:
         model = Print
         fields = '__all__'
 
 class FrameSerializer(serializers.ModelSerializer):
+    customer = CustomerShortSerializer(read_only=True)  
     class Meta:
         model = Frame
         fields = '__all__'
@@ -36,21 +47,13 @@ class CustomerSerializer(serializers.ModelSerializer):
         fields = ['id', 'first_name', 'last_name', 'email', 'phone_number', 'shipping_addresses', 'scans', 'prints', 'frames']
 
     def create(self, validated_data):
-        logger.debug("Creating customer with validated data: %s", validated_data)
         addresses_data = validated_data.pop('shipping_addresses', [])
-        logger.debug("Addresses data: %s", addresses_data)
         
         customer = Customer.objects.create(**validated_data)
-        logger.debug("Customer created: %s", customer)
-        
+
         for address_data in addresses_data:
             address_data['customer'] = customer.id
-            logger.debug("customer id is", customer.id)
             Address.objects.create(**address_data)
-            logger.debug("Created address: %s", address_data)
-            
-        logger.debug("Customer creation complete with addresses: %s", addresses_data)
-        return customer
 
     def update(self, instance, validated_data):
         addresses_data = validated_data.pop('shipping_addresses')
