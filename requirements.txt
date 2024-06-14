@@ -3,6 +3,7 @@ dj-database-url==2.2.0
 Django==5.0.6
 django-cors-headers==4.3.1
 django-extensions==3.2.3
+django-filter==24.2
 djangorestframework==3.15.1
 drf-nested-routers==0.94.1
 gunicorn==22.0.0
