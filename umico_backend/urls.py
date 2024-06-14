@@ -22,7 +22,8 @@ from rest_framework_nested.routers import NestedDefaultRouter
 from rest_framework import routers
 from umico_app.views import (
     CustomerViewSet, ScanViewSet, PrintViewSet, FrameViewSet, 
-    AddressViewSet, GetCSRFToken, signup, index
+    AddressViewSet, GetCSRFToken, signup, index,
+    SearchResultsView,
 )
 
 router = routers.DefaultRouter()
@@ -49,6 +50,7 @@ urlpatterns = [
     path('', index, name='index'),  # Root URL
     path('', include(router.urls)), # Main API routes
     path('', include(customers_router.urls)), # Nested customer routes
+    path("search/", SearchResultsView.as_view(), name="search_results"),
    
 ]
 

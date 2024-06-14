@@ -89,7 +89,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'umico_app',
-    'dj_database_url'
+    'dj_database_url',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -124,10 +125,19 @@ SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SAMESITE = 'Lax'
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',  # Optional, for browsable API
+    ),
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter'
+    ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
     ]
 }
+
 
 ROOT_URLCONF = "umico_backend.urls"
 

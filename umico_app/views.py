@@ -3,13 +3,14 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from rest_framework.permissions import IsAuthenticated
 from django.views.decorators.csrf import ensure_csrf_cookie
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, generics, filters
 from rest_framework.decorators import action
 from django.shortcuts import render, get_object_or_404
 from rest_framework.response import Response
 from .models import Customer, Scan, Frame, Print, Address
 from .serializers import CustomerSerializer, ScanSerializer, PrintSerializer, FrameSerializer, AddressSerializer
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.authentication import TokenAuthentication
 
 import logging
 
@@ -22,6 +23,20 @@ def index(request):
     return HttpResponse("Hello, world. You're at the index.")
 
 # GET Viewsets
+
+class SearchResultsView(generics.ListAPIView):
+    queryset = Customer.objects.all()
+    serializer_class = CustomerSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['first_name', 'last_name', 'email', 'phone_number', 'shipping_addresses__city', 'shipping_addresses__state']
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        print("Authorization header:", request.headers.get('Authorization'))
+        return super().get(request, *args, **kwargs)
+
+
 class GetCSRFToken(APIView):
     permission_classes = (IsAuthenticated,)
 
