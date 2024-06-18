@@ -41,7 +41,6 @@ class Customer(models.Model):
     )
     timestamp = models.DateTimeField(auto_now_add=True)
    
-
     def __str__(self):
        return f"{self.first_name} {self.last_name}"
 
@@ -56,16 +55,22 @@ class Print(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     #PRINT JOB ATTRIBUTES
-    image_height = models.DecimalField(max_digits=8, decimal_places=2)
-    image_width = models.DecimalField(max_digits=8, decimal_places=2)
-    paper_height = models.DecimalField(max_digits=8, decimal_places=2)
-    paper_width = models.DecimalField(max_digits=8, decimal_places=2)
-    #upload image to storage & save url
-    thumbnail = models.CharField(max_length=250, default='/static/images/placeholder.svg')
+    image_height = models.DecimalField(max_digits=8, decimal_places=3)
+    image_width = models.DecimalField(max_digits=8, decimal_places=3)
+    paper_height = models.DecimalField(max_digits=8, decimal_places=3)
+    paper_width = models.DecimalField(max_digits=8, decimal_places=3)
     #border or full bleed
     print_style = models.CharField(max_length=50)
-    quantity = models.IntegerField()
-    job_notes = models.TextField()
+    quantity = models.IntegerField(default=1)
+    job_notes = models.TextField(default="N/A")
+
+    is_completed = models.BooleanField(default=False)
+    client_notified = models.BooleanField(default=False)
+    notification_date = models.DateTimeField(null=True, blank=True)
+    final_location = models.CharField(max_length=50, default="N/A")
+    payment_type = models.CharField(max_length=50, default="Visa")
+    deposit = models.BooleanField(default=False)
+    balance_paid = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.customer.first_name} {self.customer.last_name}"
@@ -81,21 +86,19 @@ class Scan(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     #SCAN JOB ATTRIBUTES
-    image_height = models.DecimalField(max_digits=8, decimal_places=2)
-    image_width = models.DecimalField(max_digits=8, decimal_places=2)
+    image_height = models.DecimalField(max_digits=8, decimal_places=3)
+    image_width = models.DecimalField(max_digits=8, decimal_places=3)
     file_type = models.CharField(max_length=50)
     # 300 600 900 1200 or 1600
-    dpi = models.DecimalField(max_digits=8, decimal_places=2)
-    #upload image to storage & save url
-    thumbnail = models.CharField(max_length=250, default='/static/images/placeholder.svg')
-    is_completed = models.BooleanField()
-    client_notified = models.BooleanField()
+    dpi = models.DecimalField(max_digits=8, decimal_places=3)
+   
+    is_completed = models.BooleanField(default=False)
+    client_notified = models.BooleanField(default=False)
     notification_date = models.DateTimeField(null=True, blank=True)
-    final_location = models.CharField(max_length=50)
-    payment_type = models.CharField(max_length=50)
-    deposit_made = models.BooleanField()
-    balance_paid = models.BooleanField()
-    job_notes = models.TextField(default="No notes at this time")
+    final_location = models.CharField(max_length=50, default="N/A")
+    payment_type = models.CharField(max_length=50, default="Visa")
+    deposit = models.BooleanField(default=False)
+    balance_paid = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.customer.first_name} {self.customer.last_name}"
@@ -106,50 +109,55 @@ class Scan(models.Model):
 
 class Frame(models.Model):
     deadline = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
     #Timestamp necessary?
 
     #Frame JOB ATTRIBUTES
-    image_height = models.DecimalField(max_digits=8, decimal_places=2)
-    image_width = models.DecimalField(max_digits=8, decimal_places=2)
-    frame_height = models.DecimalField(max_digits=8, decimal_places=2)
-    frame_width = models.DecimalField(max_digits=8, decimal_places=2)
+    image_height = models.DecimalField(max_digits=8, decimal_places=3)
+    image_width = models.DecimalField(max_digits=8, decimal_places=3)
+    frame_height = models.DecimalField(max_digits=8, decimal_places=3)
+    frame_width = models.DecimalField(max_digits=8, decimal_places=3)
     moulding = models.CharField(max_length=50)
     moulding_number = models.BigIntegerField(default=23423)
+    # mat float or window
     mat = models.CharField(max_length=50)
     mat_number = models.BigIntegerField(default=23432)
-    # mat 8 ply or 8 ply
+    # mat 2, 4 or 8 ply
     mat_ply = models.CharField(max_length=50)
     mat_window = models.BooleanField()
     mat_double = models.BooleanField()
-    mat_in_visible = models.DecimalField(max_digits=8, decimal_places=2)
-    mat_in_total = models.DecimalField(max_digits=8, decimal_places=2, default=0.0)
-    mat_inside_height = models.DecimalField(max_digits=8, decimal_places=2)
-    mat_inside_width = models.DecimalField(max_digits=8, decimal_places=2)
-    mat_outside_height = models.DecimalField(max_digits=8, decimal_places=2)
-    mat_outside_width = models.DecimalField(max_digits=8, decimal_places=2)
+    mat_in_visible = models.DecimalField(max_digits=8, decimal_places=3)
+    mat_in_total = models.DecimalField(max_digits=8, decimal_places=3, default=0.0)
+    mat_inside_height = models.DecimalField(max_digits=8, decimal_places=3)
+    mat_inside_width = models.DecimalField(max_digits=8, decimal_places=3)
+    mat_outside_height = models.DecimalField(max_digits=8, decimal_places=3)
+    mat_outside_width = models.DecimalField(max_digits=8, decimal_places=3)
     #float raised or flat
+    float = models.BooleanField(default=False)
     float_type = models.CharField(max_length=50)
-    float_in_visible = models.DecimalField(max_digits=8, decimal_places=2)
-    float_in_total = models.DecimalField(max_digits=8, decimal_places=2)
+    float_in_visible = models.DecimalField(max_digits=8, decimal_places=3)
+    float_in_total = models.DecimalField(max_digits=8, decimal_places=3)
     glazing = models.CharField(max_length=50)
     #upload image to storage & save url
     thumbnail = models.CharField(max_length=250, default='/static/images/placeholder.svg')
     # glazing premium clear, conservation clear uv
     glazing_type = models.CharField(max_length=50)
-    spacers = models.BooleanField()
+    spacers = models.BooleanField(default=False)
     spacers_type = models.CharField(max_length=50)
     canvas_floater = models.DecimalField(8, 2)
-    canvas_floater = models.DecimalField(max_digits=8, decimal_places=2)
-    straight_to_frame = models.BooleanField()
+    canvas_floater = models.DecimalField(max_digits=8, decimal_places=3)
+    straight_to_frame = models.BooleanField(default=False)
     art_location = models.CharField(max_length=50)
-    art_condition = models.TextField()
-    is_completed = models.BooleanField()
-    client_notified = models.BooleanField()
+    art_condition = models.TextField(default="N/A")
+    job_notes = models.TextField(default="No notes at this time")
+
+    is_completed = models.BooleanField(default=False)
+    client_notified = models.BooleanField(default=False)
     notification_date = models.DateTimeField(null=True, blank=True)
     final_location = models.CharField(max_length=50)
-    payment_type = models.CharField(max_length=50)
-    deposit = models.BooleanField()
-    balance_paid = models.BooleanField()
+    payment_type = models.CharField(max_length=50, default="Visa")
+    deposit = models.BooleanField(default=False)
+    balance_paid = models.BooleanField(default=False)
 
     # one customer to many frames
     customer = models.ForeignKey(Customer, related_name='frames', on_delete=models.CASCADE)
