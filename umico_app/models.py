@@ -105,6 +105,28 @@ class Scan(models.Model):
 
     def get_absolute_url(self):
         return reverse('scan_detail', kwargs={'pk': self.id})
+    
+class Misc(models.Model):
+    deadline = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    job_notes = models.TextField(default="No notes at this time")
+    is_completed = models.BooleanField(default=False)
+    client_notified = models.BooleanField(default=False)
+    notification_date = models.DateTimeField(null=True, blank=True)
+    final_location = models.CharField(max_length=50)
+    payment_type = models.CharField(max_length=50, default="Visa")
+    deposit = models.BooleanField(default=False)
+    balance_paid = models.BooleanField(default=False)
+
+    # one customer to many frames
+    customer = models.ForeignKey(Customer, related_name='misc', on_delete=models.CASCADE)
+
+    #functions
+    def __str__(self):
+        return f"{self.customer.first_name} {self.customer.last_name}"
+
+    def get_absolute_url(self):
+        return reverse('misc_detail', kwargs={'pk': self.id})
 
 
 class Frame(models.Model):
@@ -161,10 +183,8 @@ class Frame(models.Model):
 
     # one customer to many frames
     customer = models.ForeignKey(Customer, related_name='frames', on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
-
+   
     #functions
-
     def __str__(self):
         return f"{self.customer.first_name} {self.customer.last_name}"
 

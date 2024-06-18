@@ -21,7 +21,7 @@ from django.contrib.auth.models import User
 from rest_framework_nested.routers import NestedDefaultRouter
 from rest_framework import routers
 from umico_app.views import (
-    CustomerViewSet, ScanViewSet, PrintViewSet, FrameViewSet, 
+    CustomerViewSet, ScanViewSet, PrintViewSet, FrameViewSet, MiscViewSet,
     AddressViewSet, GetCSRFToken, signup, index,
     SearchResultsView,
 )
@@ -32,12 +32,14 @@ router.register(r'scans', ScanViewSet)
 router.register(r'prints', PrintViewSet)
 router.register(r'frames', FrameViewSet)
 router.register(r'addresses', AddressViewSet)
+router.register(r'misc', MiscViewSet)
 
 #nested routers to add onto customer URL with PK id
 customers_router = NestedDefaultRouter(router, r'customers', lookup='customer')
 customers_router.register(r'scans', ScanViewSet, basename='customer-scans')
 customers_router.register(r'frames', FrameViewSet, basename='customer-frames')
 customers_router.register(r'prints', PrintViewSet, basename='customer-prints')
+customers_router.register(r'misc', MiscViewSet, basename='customer-misc')
 
 urlpatterns = [
     #Admin page

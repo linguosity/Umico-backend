@@ -7,8 +7,8 @@ from rest_framework import viewsets, status, generics, filters
 from rest_framework.decorators import action
 from django.shortcuts import render, get_object_or_404
 from rest_framework.response import Response
-from .models import Customer, Scan, Frame, Print, Address
-from .serializers import CustomerSerializer, ScanSerializer, PrintSerializer, FrameSerializer, AddressSerializer
+from .models import Customer, Scan, Frame, Print, Address, Misc
+from .serializers import CustomerSerializer, ScanSerializer, PrintSerializer, FrameSerializer, AddressSerializer, MiscSerializer
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authentication import TokenAuthentication
 
@@ -132,6 +132,43 @@ class CustomerViewSet(viewsets.ModelViewSet):
         scan.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
+    #VIEW MISC | customers/{id}/miscs/ #####################
+    @action(detail=True, methods=['get'])
+    def misc(self, request, pk=None):
+        customer = self.get_object()
+        misc = Misc.objects.filter(customer=customer)
+        serializer = MiscSerializer(misc, many=True)
+        return Response(serializer.data)
+
+    # CREATE MISC
+    @action(detail=True, methods=['post'])
+    def add_misc(self, request, pk=None):
+        customer = self.get_object()
+        serializer = MiscSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(customer=customer)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # UPDATE MISC
+    @action(detail=True, methods=['put'], url_path='update_misc/(?P<misc_id>[^/.]+)')
+    def update_misc(self, request, pk=None):
+        customer = self.get_object()
+        misc = get_object_or_404(Misc, customer=customer, pk=request.data.get('misc_id'))
+        serializer = MiscSerializer(misc, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # DELETE MISC (ARCHIVE)
+    @action(detail=True, methods=['delete'])
+    def delete_misc(self, request, pk=None):
+        customer = self.get_object()
+        misc = get_object_or_404(Misc, customer=customer, pk=request.data.get('misc_id'))
+        misc.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
 
     #VIEW FRAMES | customers/{id}/frames/ #####################
     @action(detail=True, methods=['get'])
@@ -232,6 +269,11 @@ class PrintViewSet(viewsets.ModelViewSet):
 class FrameViewSet(viewsets.ModelViewSet):
     queryset = Frame.objects.order_by('deadline')
     serializer_class = FrameSerializer
+    permission_classes = [IsAuthenticated]
+
+class MiscViewSet(viewsets.ModelViewSet):
+    queryset = Misc.objects.order_by('deadline')
+    serializer_class = MiscSerializer
     permission_classes = [IsAuthenticated]
 
 

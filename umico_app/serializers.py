@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Customer, Scan, Print, Frame, Address
+from .models import Customer, Scan, Print, Frame, Address, Misc
 
 import logging
 
@@ -36,6 +36,12 @@ class FrameSerializer(serializers.ModelSerializer):
         model = Frame
         fields = '__all__'
 
+class MiscSerializer(serializers.ModelSerializer):
+    customer = CustomerShortSerializer(read_only=True)  
+    class Meta:
+        model = Misc
+        fields = '__all__'
+
 class CustomerSerializer(serializers.ModelSerializer):
     shipping_addresses = AddressSerializer(many=True, required=False)
     scans = ScanSerializer(many=True, read_only=True)
@@ -44,7 +50,7 @@ class CustomerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Customer
-        fields = ['id', 'first_name', 'last_name', 'email', 'phone_number', 'shipping_addresses', 'scans', 'prints', 'frames']
+        fields = ['id', 'first_name', 'last_name', 'email', 'phone_number', 'shipping_addresses', 'scans', 'prints', 'frames', 'misc']
 
     def create(self, validated_data):
         addresses_data = validated_data.pop('shipping_addresses', [])
