@@ -44,6 +44,7 @@ class MiscSerializer(serializers.ModelSerializer):
 
 class CustomerSerializer(serializers.ModelSerializer):
     shipping_addresses = AddressSerializer(many=True, required=False)
+    misc = MiscSerializer(many=True, read_only=True)
     scans = ScanSerializer(many=True, read_only=True)
     prints = PrintSerializer(many=True, read_only=True)
     frames = FrameSerializer(many=True, read_only=True)
