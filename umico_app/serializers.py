@@ -62,6 +62,8 @@ class CustomerSerializer(serializers.ModelSerializer):
             address_data['customer'] = customer.id
             Address.objects.create(**address_data)
 
+        return customer
+
     def update(self, instance, validated_data):
         addresses_data = validated_data.pop('shipping_addresses')
         
