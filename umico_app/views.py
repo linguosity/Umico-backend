@@ -11,8 +11,9 @@ from .models import Customer, Scan, Frame, Print, Address, Misc
 from .serializers import CustomerSerializer, ScanSerializer, PrintSerializer, FrameSerializer, AddressSerializer, MiscSerializer
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authentication import TokenAuthentication
-
 import logging
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
 
 logger = logging.getLogger('umico_app')
 
@@ -23,6 +24,28 @@ def index(request):
     return HttpResponse("Hello, world. You're at the index.")
 
 # GET Viewsets
+
+class CustomAuthToken(ObtainAuthToken):
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data,
+                                           context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({
+            'token': token.key,
+            'user_id': user.pk,
+            'email': user.email,
+            'username': user.username
+        })
+
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        # Delete the token to logout
+        request.user.auth_token.delete()
+        return Response({"message": "Successfully logged out."}, status=status.HTTP_200_OK)
 
 class SearchResultsView(generics.ListAPIView):
     queryset = Customer.objects.all()

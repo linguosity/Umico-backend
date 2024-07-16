@@ -25,6 +25,7 @@ from umico_app.views import (
     AddressViewSet, GetCSRFToken, signup, index,
     SearchResultsView,
 )
+from umico_app.views import CustomAuthToken, LogoutView
 
 router = routers.DefaultRouter()
 router.register(r'customers', CustomerViewSet)
@@ -53,6 +54,7 @@ urlpatterns = [
     path('', include(router.urls)), # Main API routes
     path('', include(customers_router.urls)), # Nested customer routes
     path("search/", SearchResultsView.as_view(), name="search_results"),
-   
+    path('api/token/', CustomAuthToken.as_view(), name='api_token_auth'),
+    path('api/logout/', LogoutView.as_view(), name='api_logout'),
 ]
 
