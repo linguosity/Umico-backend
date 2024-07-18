@@ -14,6 +14,7 @@ from rest_framework.authentication import TokenAuthentication
 import logging
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
+from rest_framework.permissions import AllowAny
 
 logger = logging.getLogger('umico_app')
 
@@ -24,6 +25,8 @@ def index(request):
     return HttpResponse("Hello, world. You're at the index.")
 
 class ValidateTokenView(APIView):
+    permission_classes = [AllowAny]  # Change this line
+
     def post(self, request):
         token_key = request.data.get('token')
         if not token_key:
