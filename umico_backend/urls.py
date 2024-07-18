@@ -23,7 +23,7 @@ from rest_framework import routers
 from umico_app.views import (
     CustomerViewSet, ScanViewSet, PrintViewSet, FrameViewSet, MiscViewSet,
     AddressViewSet, GetCSRFToken, signup, index,
-    SearchResultsView,
+    SearchResultsView, ValidateTokenView
 )
 from umico_app.views import CustomAuthToken, LogoutView
 
@@ -56,5 +56,7 @@ urlpatterns = [
     path("search/", SearchResultsView.as_view(), name="search_results"),
     path('api/token/', CustomAuthToken.as_view(), name='api_token_auth'),
     path('api/logout/', LogoutView.as_view(), name='api_logout'),
+    path('api/validate-token/', ValidateTokenView.as_view(), name='validate_token'),
+
 ]
 

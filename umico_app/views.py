@@ -23,7 +23,23 @@ from django.http import HttpResponse
 def index(request):
     return HttpResponse("Hello, world. You're at the index.")
 
-# GET Viewsets
+class ValidateTokenView(APIView):
+    def post(self, request):
+        token_key = request.data.get('token')
+        if not token_key:
+            return Response({'error': 'Token is required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            token = Token.objects.get(key=token_key)
+            user = token.user
+            return Response({
+                'valid': True,
+                'user_id': user.pk,
+                'username': user.username,
+                'email': user.email
+            })
+        except Token.DoesNotExist:
+            return Response({'valid': False}, status=status.HTTP_401_UNAUTHORIZED)
 
 class CustomAuthToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
